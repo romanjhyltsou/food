@@ -38,8 +38,14 @@ window.addEventListener('DOMContentLoaded', ()=> {
     const deadline = '2023-05-25';
 
     function getTimeRemaining(endtime){
-      const t = Date.parse(endtime) - Date.parse(new Date()),
-      
+      let days, hours, minutes, seconds;
+      const t = Date.parse(endtime) - Date.parse(new Date());
+            if(t <= 0){
+              days = 0;
+              hours = 0;
+              minutes = 0;
+              seconds = 0;
+            }else{
             //делим общее количество миллисекунд на миллисекунды в сутках 
             //1000мили * 60= в минуте мил сек, 1000мили * 60 * 60 = в часе мил сек
             //, 1000 * 60 * 60 * 24 = в дне мил сек
@@ -48,6 +54,8 @@ window.addEventListener('DOMContentLoaded', ()=> {
             hours = Math.floor((t / (1000 * 60 * 60)) % 24),
             minutes = Math.floor((t / 1000 / 60) % 60), // t / 1000 = сек/60=мин
             seconds = Math.floor((t / 1000) % 60);
+            }
+
             return {
                 'total': t,
                 'days': days,
@@ -90,4 +98,34 @@ window.addEventListener('DOMContentLoaded', ()=> {
     }
 
     setClock('.timer', deadline);
+
+    // Modal
+
+    const modalTrigger = document.querySelectorAll('[data-modal]'),
+          modal = document.querySelector('.modal'),
+          modalClosebtn = document.querySelector('[data-close]');
+
+    modalTrigger.forEach(btn => {
+      btn.addEventListener('click', ()=> {
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    });
+    });
+
+    function closeModal(){
+      modal.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    modalClosebtn.addEventListener('click', closeModal);
+
+    modal.addEventListener('click', (e)=> {
+      if(e.target === modal){
+        closeModal();
+      }
+    });
+
+    document.addEventListener('keydown', (e)=>{
+      if(e.code === 'Escape' && modal.classList.contains('show')) closeModal();
+    });
 });
